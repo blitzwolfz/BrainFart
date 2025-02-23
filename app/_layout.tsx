@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import * as SQLite from "expo-sqlite";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,6 +19,19 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    const db = SQLite.openDatabaseSync('moods')
+    db.execSync(
+        `CREATE TABLE IF NOT EXISTS moods (
+        id INTEGER PRIMARY KEY,
+        value INTEGER NOT NULL,
+        description TEXT
+    );`
+    );
+
+    // db.execSync(
+    //     `DROP TABLE IF EXISTS moods;`
+    // )
+
     if (loaded) {
       SplashScreen.hideAsync();
     }

@@ -3,18 +3,8 @@ import { StyleSheet, TextInput, Alert, View, TouchableWithoutFeedback, Keyboard,
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import Button from '@/components/ui/Button';
-
-const moodOptions = [
-    { color: '#FF0000', emoji: '😡', description: 'Very Angry' },
-    { color: '#FF4500', emoji: '😠', description: 'Angry' },
-    { color: '#FF8C00', emoji: '😟', description: 'Worried' },
-    { color: '#FFA500', emoji: '😐', description: 'Neutral' },
-    { color: '#FFD700', emoji: '🙂', description: 'Slightly Happy' },
-    { color: '#ADFF2F', emoji: '😊', description: 'Happy' },
-    { color: '#32CD32', emoji: '😀', description: 'Very Happy' },
-    { color: '#008000', emoji: '😃', description: 'Excited' },
-    { color: '#006400', emoji: '😁', description: 'Elated' },
-];
+import {moodOptions} from "@/utils/mood";
+import * as SQLite from 'expo-sqlite';
 
 export default function MoodTracker() {
     const [selectedMood, setSelectedMood] = useState(null);
@@ -42,6 +32,7 @@ export default function MoodTracker() {
         onPanResponderMove: (_, gestureState) => {
             const index = Math.floor((gestureState.moveX / 350) * moodOptions.length);
             if (index >= 0 && index < moodOptions.length) {
+                //@ts-ignore
                 setSelectedMood(moodOptions[index]);
             }
         },
@@ -50,19 +41,44 @@ export default function MoodTracker() {
     const handleSubmit = () => {
         if (!selectedMood) {
             Alert.alert('Error', 'Please select a mood before submitting.');
+            const db = SQLite.openDatabaseSync('moods')
+            const allRows = db.getAllSync('SELECT * FROM moods');
+
+            console.log(allRows);
             return;
         }
 
-        Alert.alert('Success', 'Mood entry saved!');
-        setSelectedMood(null);
-        setThoughts('');
+        else {
+            try {
+                const db = SQLite.openDatabaseSync('moods')
+                db.execSync(
+                    `INSERT INTO moods (id, value, description) VALUES (${Math.floor(Date.now() / 1000)}, ${selectedMood.value}, '${thoughts.replace(/'/g, "''")}');`
+                );
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    Alert.alert('Error', error.message);
+                    console.log(error.message);
+                    console.log('E');
+                }
+
+                else Alert.alert('Error', 'An error occurred.');
+                return;
+            }
+            finally {
+                Alert.alert('Success', 'Mood entry saved!');
+                setSelectedMood(null);
+                setThoughts('');
+            }
+
+        }
     };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <ThemedView style={styles.container}>
                 <ThemedText type="title" style={styles.centerText}>How are you feeling today?</ThemedText>
-                <ThemedText type="subtitle" style={styles.timeText}>{currentTime}</ThemedText>
+                <ThemedText type="subtitle">{currentTime}</ThemedText>
                 <View style={styles.moodBarContainer} {...panResponder.panHandlers}>
                     {moodOptions.map((mood, index) => (
                         <View
