@@ -10,7 +10,7 @@ export const moodOptions : Mood[] = [
     { color: '#006400', emoji: '😁', description: 'Elated', value: 5 },
 ];
 
-interface Mood {
+export interface Mood {
     color: string;
     emoji: string;
     description: string;
