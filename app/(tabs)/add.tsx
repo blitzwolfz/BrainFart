@@ -41,7 +41,9 @@ export default function MoodTracker() {
     const handleSubmit = () => {
         if (!selectedMood) {
             Alert.alert('Error', 'Please select a mood before submitting.');
-            const db = SQLite.openDatabaseSync('moods')
+            const db = SQLite.openDatabaseSync('moods', {
+                useNewConnection: true
+            })
             const allRows = db.getAllSync('SELECT * FROM moods');
 
             console.log(allRows);
@@ -50,7 +52,9 @@ export default function MoodTracker() {
 
         else {
             try {
-                const db = SQLite.openDatabaseSync('moods')
+                const db = SQLite.openDatabaseSync('moods', {
+                    useNewConnection: true
+                })
                 db.execSync(
                     `INSERT INTO moods (id, value, description) VALUES (${Math.floor(Date.now() / 1000)}, ${selectedMood.value}, '${thoughts.replace(/'/g, "''")}');`
                 );

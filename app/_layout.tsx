@@ -20,13 +20,19 @@ export default function RootLayout() {
 
   useEffect(() => {
     const db = SQLite.openDatabaseSync('moods')
-    db.execSync(
-        `CREATE TABLE IF NOT EXISTS moods (
+    try {
+      db.execSync(
+          `CREATE TABLE IF NOT EXISTS moods (
         id INTEGER PRIMARY KEY,
         value INTEGER NOT NULL,
         description TEXT
     );`
-    );
+      );
+    }
+
+    catch(e) {
+      console.log(e.stack);
+    }
 
     // db.execSync(
     //     `DROP TABLE IF EXISTS moods;`

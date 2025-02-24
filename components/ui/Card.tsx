@@ -3,11 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 
-export default function MoodEntryCard({ mood, emoji, description, color, onDelete }) {
+export default function MoodEntryCard({ mood, emoji, description, color }) {
     return (
         <View style={[styles.card, { backgroundColor: color }]}>
             <ThemedText style={styles.text}>{emoji} {description}</ThemedText>
-            <Button onPress={onDelete}>Delete</Button>
         </View>
     );
 }
