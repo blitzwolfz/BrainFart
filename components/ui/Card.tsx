@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { Button } from '@/components/ui/Button';
 
 export default function MoodEntryCard({ mood, emoji, description, color }) {
     return (
         <View style={[styles.card, { backgroundColor: color }]}>
-            <ThemedText style={styles.text}>{emoji} {description}</ThemedText>
+            <ThemedText style={styles.text}>{emoji} {mood}</ThemedText>
+            {description && <ThemedText style={styles.text}>{description}</ThemedText>}
         </View>
     );
 }
@@ -25,5 +25,6 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         marginBottom: 8,
+        color: "black"
     }
 });
