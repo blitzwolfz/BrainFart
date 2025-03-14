@@ -86,7 +86,7 @@ export default function MoodTracker() {
                 <View style={styles.moodBarContainer} {...panResponder.panHandlers}>
                     {moodOptions.map((mood, index) => (
                         <View
-                            key={index}
+                            key={mood.color}
                             style={[styles.moodBar, { backgroundColor: mood.color, opacity: selectedMood?.color === mood.color ? 1 : 0.5 }]}
                         />
                     ))}

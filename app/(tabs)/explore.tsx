@@ -30,7 +30,7 @@ export default function MoodCalendarScreen() {
 
     const loadMarkedDates = () => {
         const result = db.getAllSync('SELECT id FROM moods;');
-        let marks = {};
+        const marks = {};
 
         result.forEach(row => {
             const localDate = convertToLocalDate(row.id * 1000);
